@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<launch>
+
+
+    <!-- pointcloud_to_laserscan node -->
+    <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+        <!-- 输入点云话题，需与 rslidar_sdk 输出一致 -->
+        <remap from="cloud_in" to="/livox_pcl0"/>
+        <!-- 输出激光话题（可选自定义） -->
+        <remap from="scan" to="/scan"/>
+
+        <rosparam>
+            # Frame options
+            #target_frame: l_scan  # 可启用此项强制输出到指定 frame
+            transform_tolerance: 0.01
+            min_height: 0.1
+            max_height: 1.0
+
+            # Angular parameters
+            angle_min: -3.1415926
+            angle_max: 3.1415926    
+            angle_increment: 0.003
+
+            # Time and range
+            scan_time: 0.1
+            range_min: 0.2
+            range_max: 10.0
+
+            # Inf handling
+            use_inf: true
+            inf_epsilon: 1.0
+
+            # Concurrency
+            concurrency_level: 1
+        </rosparam>
+    </node>
+
+</launch>
