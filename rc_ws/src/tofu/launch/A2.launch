@@ -1,0 +1,23 @@
+<launch>
+  <!-- <include file="$(find tofu)/launch/uart1.launch">
+  </include> -->
+  <include file="$(find rslidar_sdk)/launch/start.launch">
+  </include>
+
+  <include file="$(find pointcloud_to_laserscan)/launch/demo3d.launch">
+  </include>
+  <include file="$(find tofu)/launch/rs_to_velodyne.launch">
+  </include>
+  <include file="$(find dm_imu)/launch/run_without_rviz.launch">
+  </include>
+  <include file="$(find tofu)/launch/msg.launch">
+  </include>
+  <include file="$(find fast_lio)/launch/mapping_velodyne.launch">
+  </include>
+  <!-- <include file="$(find tofu)/launch/uart.launch">
+  </include> -->
+ 
+  <!-- <include file="$(find tofu)/launch/location.launch" /> -->
+  <!-- <node pkg="rviz" type="rviz" name="rviz"/> -->
+</launch>
+

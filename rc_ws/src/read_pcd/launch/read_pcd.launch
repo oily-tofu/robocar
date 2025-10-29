@@ -1,0 +1,8 @@
+<launch>
+    <param name="file_path" value="/home/tofu/rc_ws/src/tofu/map/map_filter.pcd"/>
+    <node type="read_pcd" name="read_pcd" pkg="read_pcd" />
+
+
+
+</launch>
+

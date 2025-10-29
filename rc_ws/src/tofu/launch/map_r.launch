@@ -1,0 +1,15 @@
+<launch>
+    <!-- 设置地图的配置文件 -->
+    <arg name="map" default="map_scans.yaml" />
+    <!-- 运行地图服务器，并且加载设置的地图-->
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find tofu)/map/$(arg map)">
+        <!-- <param name="frame_id" value="map_2d"/> -->
+        <remap from="map" to="map_2d"/>
+        <!-- <remap from="static_map" to="static_map_2d"/> -->
+    </node>
+    <node pkg="tf" type="static_transform_publisher" name="map_to_map2d_tf"
+      args="0 0 0 0 0 0 map map_2d 100" />
+
+    <!-- <node pkg="tf" type="static_transform_publisher" name="map_to_map_2d"
+      args="0 0 0 0 0 0 map map_2d 100"/> -->
+</launch>

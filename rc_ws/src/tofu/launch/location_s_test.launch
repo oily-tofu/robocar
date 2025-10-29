@@ -1,0 +1,10 @@
+<launch>
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization_node">
+    <param name="odom0" value="odom"/>
+    <param name="odom0_config" value="tofu/config/odometry_config.yaml"/>
+    <param name="imu0" value="imu"/>
+    <param name="imu0_config" value="tofu/config/imu_config.yaml"/>
+    <param name="state_variance" value="1e-9"/>
+    <param name="imu0_queue_size" value="5"/>
+  </node>
+</launch>

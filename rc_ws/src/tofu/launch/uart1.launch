@@ -1,0 +1,9 @@
+<launch>
+    <!-- Python 串口发送节点 -->
+    <node name="uart_sender1" pkg="tofu" type="uart.py" output="screen">
+        <!-- 可配置参数 -->
+        <param name="serial_port" value="/dev/ttyACM0" />
+        <param name="baud_rate" value="921600" />
+        <param name="send_data" value="Hello from ROS!" />
+    </node>
+</launch>

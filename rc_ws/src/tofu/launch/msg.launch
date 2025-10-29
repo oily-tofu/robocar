@@ -1,0 +1,6 @@
+<launch>
+    <!-- Python 串口发送节点 -->
+    <node name="imu_lidar_sync_node" pkg="tofu" type="msg.py" output="screen">
+        <!-- 可配置参数 -->
+    </node>
+</launch>

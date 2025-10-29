@@ -1,0 +1,6 @@
+<launch>
+    <!-- Python 串口发送节点 -->
+    <node name="cmd_vel_to_serial" pkg="tofu" type="nav_cmd.py" output="screen">
+
+    </node>
+</launch>

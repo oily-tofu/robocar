@@ -1,0 +1,26 @@
+DWAPlannerROS:
+  # 速度限制
+  max_vel_x: 0.5                  # 最大线速度 (m/s)
+  min_vel_x: -0.1                 # 最小线速度 (后退)
+  max_vel_y: 0.0                  # 最大侧向速度 (全向机器人需设置)
+  max_vel_theta: 1.0              # 最大角速度 (rad/s)
+  
+  # 加速度限制
+  acc_lim_x: 0.5                  # 线加速度限制 (m/s²)
+  acc_lim_theta: 1.0              # 角加速度限制 (rad/s²)
+  
+  # 轨迹采样参数
+  vx_samples: 20                  # 线速度采样数
+  vy_samples: 0                   # 侧向速度采样数 (差分驱动机器人为0)
+  vtheta_samples: 40              # 角速度采样数
+  sim_time: 1.5                   # 轨迹预测时长 (秒)
+  
+  # 代价函数权重
+  path_distance_bias: 0.6          # 路径跟随权重
+  goal_distance_bias: 0.4          # 目标点接近权重
+  occdist_scale: 0.1              # 障碍物避让权重
+  
+  # 其他参数
+  prune_plan: true                # 是否修剪全局路径
+  sim_granularity: 0.025          # 轨迹模拟步长 (米)
+  escape_vel: -0.1               # 逃生速度 (后退)

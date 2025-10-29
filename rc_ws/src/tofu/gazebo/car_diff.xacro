@@ -1,0 +1,236 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="diff_car">
+
+  <!-- 参数定义 -->
+  <xacro:property name="body_length" value="0.70"/> <!-- m -->
+  <xacro:property name="body_width"  value="0.70"/>
+  <xacro:property name="body_height" value="0.10"/>
+  <xacro:property name="body_mass"   value="30"/>
+
+  <xacro:property name="wheel_radius" value="0.05"/> <!-- 5 cm -->
+  <xacro:property name="wheel_width"  value="0.05"/>
+  <xacro:property name="wheel_mass"   value="1"/>
+  <xacro:property name="ground_clearance" value="0.03"/>
+
+  <!-- 惯性宏: box -->
+  <xacro:macro name="box_inertia" params="mass x y z">
+    <inertial>
+      <mass value="${mass}"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="${1/12.0*mass*(y*y+z*z)}"
+               iyy="${1/12.0*mass*(x*x+z*z)}"
+               izz="${1/12.0*mass*(x*x+y*y)}"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </xacro:macro>
+
+  <!-- 惯性宏: cylinder -->
+  <xacro:macro name="cylinder_inertia" params="mass r l">
+    <inertial>
+      <mass value="${mass}"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="${1/12.0*mass*(3*r*r + l*l)}"
+               iyy="${1/12.0*mass*(3*r*r + l*l)}"
+               izz="${0.5*mass*r*r}"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </xacro:macro>
+
+<!-- 惯性宏: 球 -->
+  <xacro:macro name="sphere_inertia" params="mass r">
+  <inertial>
+    <mass value="${mass}"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <inertia ixx="${2.0/5.0*mass*r*r}"
+             iyy="${2.0/5.0*mass*r*r}"
+             izz="${2.0/5.0*mass*r*r}"
+             ixy="0" ixz="0" iyz="0"/>
+  </inertial>
+</xacro:macro>
+
+
+  <!-- base_foot_link -->
+  <link name="base_foot_link">
+    <visual>
+      <geometry><sphere radius="0.01"/></geometry>
+      <material name="blue"><color rgba="0.2 0.2 0.8 1"/></material>
+    </visual>
+  </link>
+
+
+
+  <!-- base_head -->
+  <link name="base_head">
+    <visual>
+      <geometry><box size="0.1 0.1 0.1"/></geometry>
+      <material name="blue"><color rgba="0.4 0.4 0.8 1"/></material>
+    </visual>
+  </link>
+
+  <!-- ================== 车体 ================== -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="${body_length} ${body_width} ${body_height}"/>
+      </geometry>
+      <material name="blue"><color rgba="0.2 0.2 0.8 1"/></material>
+    </visual>
+    <collision>
+      <geometry><box size="${body_length} ${body_width} ${body_height}"/></geometry>
+    </collision>
+    <xacro:box_inertia mass="${body_mass}" x="${body_length}" y="${body_width}" z="${body_height}"/>
+  </link>
+
+  <joint name="base_link_to_base_foot_link" type="fixed">
+    <parent link="base_foot_link"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 ${body_height/2 + ground_clearance}" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="base_link_to_base_head" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_head"/>
+    <origin xyz="0.3 0 0.1" rpy="0 0 0"/>
+  </joint>
+
+
+<!-- 前支撑球 -->
+<link name="f_qiu">
+  <visual>
+    <geometry><sphere radius="0.015"/></geometry>
+    <material name="blue"><color rgba="0.2 0.2 0.8 1"/></material>
+  </visual>
+  <collision>
+    <geometry><sphere radius="0.015"/></geometry>
+  </collision>
+  <!-- 惯性，保证 Gazebo 物理稳定 -->
+  <xacro:sphere_inertia mass="0.01" r="0.015"/>
+</link>
+
+<joint name="joint_f_qiu" type="continuous">
+  <parent link="base_link"/>
+  <child link="f_qiu"/>
+  <origin xyz="0.3 0 -0.065" rpy="0 0 0"/> <!-- 根据前后位置调整 xyz -->
+  <axis xyz="1 1 1" />
+</joint>
+
+<!-- 后支撑球 -->
+<link name="r_qiu">
+  <visual>
+    <geometry><sphere radius="0.015"/></geometry>
+    <material name="blue"><color rgba="0.2 0.2 0.8 1"/></material>
+  </visual>
+  <collision>
+    <geometry><sphere radius="0.015"/></geometry>
+  </collision>
+  <xacro:sphere_inertia mass="0.01" r="0.015"/>
+</link>
+
+<joint name="joint_r_qiu" type="continuous">
+  <parent link="base_link"/>
+  <child link="r_qiu"/>
+  <origin xyz="-0.3 0 -0.065" rpy="0 0 0"/> <!-- 根据前后位置调整 xyz -->
+  <axis xyz="1 1 1" />
+</joint>
+
+
+  <!-- ================== 轮子 ================== -->
+  <xacro:macro name="wheel" params="name x y z side">
+    <link name="${name}">
+      <visual>
+        <geometry><cylinder radius="${wheel_radius}" length="${wheel_width}"/></geometry>
+        <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+        <material name="black"><color rgba="0 0 0 1"/></material>
+      </visual>
+      <collision>
+        <geometry><cylinder radius="${wheel_radius}" length="${wheel_width}"/></geometry>
+        <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      </collision>
+      <xacro:cylinder_inertia mass="${wheel_mass}" r="${wheel_radius}" l="${wheel_width}"/>
+    </link>
+
+    <joint name="joint_${name}" type="continuous">
+      <parent link="base_link"/>
+      <child link="${name}"/>
+      <origin xyz="${x} ${y} ${z}" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+    </joint>
+
+    <!-- Transmission for ros_control -->
+    <transmission name="trans_${name}">
+      <type>transmission_interface/SimpleTransmission</type>
+      <actuator name="motor_${name}">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+      <joint name="joint_${name}">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+      </joint>
+    </transmission>
+
+
+
+    <!-- ================== 测试小球（cs） ================== -->
+    <xacro:if value="${side == 'right'}">
+      <xacro:property name="cs_offset_y" value="-0.025"/> <!-- 右侧球偏右 -->
+    </xacro:if>
+    <xacro:if value="${side == 'left'}">
+      <xacro:property name="cs_offset_y" value="0.025"/> <!-- 左侧球偏左 -->
+    </xacro:if>
+
+    <link name="${name}_cs">
+      <visual>
+        <geometry><sphere radius="0.01"/></geometry>
+        <material name="blue"><color rgba="0.2 0.2 0.8 1"/></material>
+      </visual>
+    </link>
+
+    <joint name="joint_${name}_cs" type="fixed">
+      <parent link="${name}"/>
+      <child link="${name}_cs"/>
+      <origin xyz="0 ${cs_offset_y} 0.04" rpy="0 0 0"/>
+    </joint>
+
+
+  </xacro:macro>
+
+
+  <xacro:property name="wheel_offset_x" value="0"/>
+  <xacro:property name="wheel_offset_y" value="0.38"/>
+  <xacro:property name="wheel_center_z" value="${-body_height/2 - ground_clearance + wheel_radius}"/>
+
+  <!-- 左、右 -->
+  <xacro:wheel name="wheel_l" x="${ wheel_offset_x}"  y="${ wheel_offset_y}"  z="${wheel_center_z}" side="left"/>
+  <xacro:wheel name="wheel_r" x="${ wheel_offset_x}"  y="${-wheel_offset_y}" z="${wheel_center_z}" side="right"/>
+
+
+
+  <!-- Gazebo plugins -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"/>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
+      <ros>
+        <namespace>/</namespace>
+        <remapping>cmd_vel:=cmd_vel</remapping>
+        <remapping>odom:=odom</remapping>
+      </ros>
+      <updateRate>50.0</updateRate>
+      <leftJoint>joint_wheel_l</leftJoint>
+
+      <rightJoint>joint_wheel_r</rightJoint>
+
+      <wheelSeparation>${2*wheel_offset_y}</wheelSeparation>
+      <wheelDiameter>${2*wheel_radius}</wheelDiameter>
+      <torque>5</torque>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <robotBaseFrame>base_link</robotBaseFrame>
+    </plugin>
+  </gazebo>
+
+
+</robot>

@@ -1,0 +1,7 @@
+frequency: 100.0   
+sensor_type: imu   
+imu0: /imu     
+linear_acceleration_frame: base_link
+orientation_frame: base_link
+angular_velocity_frame: base_link
+rate_delay: 0.0
