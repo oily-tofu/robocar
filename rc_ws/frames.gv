@@ -1,0 +1,13 @@
+digraph G {
+"camera_init" -> "robot_foot_init"[label="Broadcaster: /tf_pub_2\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1760253340.467 sec old)\nBuffer length: 0.000 sec\n"];
+"map" -> "camera_init"[label="Broadcaster: /transform_fusion\nAverage rate: 48.340 Hz\nMost recent transform: 1760253340.451 ( 0.016 sec old)\nBuffer length: 4.965 sec\n"];
+"map" -> "body_2d"[label="Broadcaster: /trans_tF_2d\nAverage rate: 1000.200 Hz\nMost recent transform: 1760253340.466 ( 0.001 sec old)\nBuffer length: 4.996 sec\n"];
+"body" -> "body_foot"[label="Broadcaster: /tf_pub_1\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1760253340.467 sec old)\nBuffer length: 0.000 sec\n"];
+"camera_init" -> "body"[label="Broadcaster: /laserMapping\nAverage rate: 10.204 Hz\nMost recent transform: 1760253340.450 ( 0.017 sec old)\nBuffer length: 4.900 sec\n"];
+"body" -> "base_link"[label="Broadcaster: /body_to_base\nAverage rate: 10.195 Hz\nMost recent transform: 1760253340.499 ( -0.032 sec old)\nBuffer length: 4.904 sec\n"];
+"base_link" -> "livox_frame"[label="Broadcaster: /base_to_livox_frame\nAverage rate: 10.195 Hz\nMost recent transform: 1760253340.505 ( -0.038 sec old)\nBuffer length: 4.904 sec\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1760253340.467"[ shape=plaintext ] ;
+ }->"map";
+}
